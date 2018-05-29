@@ -2,7 +2,7 @@
     <string name="app_name">ECGExample</string>
     <string name="pulse">Pulse</string>
     <string name="ecg">ECG</string>
-    <string name="oleg">OLEG</string>
+    <string name="oleg">78</string>
     <string name="pulse_rate">Pulse Rate:</string>
     <string name="connect_to_device">Connect to device</string>
     <color name="coloreeee">#da3f47</color>

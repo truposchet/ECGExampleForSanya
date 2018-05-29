@@ -16,6 +16,7 @@
 
 package com.example.tom.ecgexample;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -23,16 +24,18 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
 import com.androidplot.Plot;
 import com.androidplot.util.Redrawer;
 import com.androidplot.xy.*;
-import com.example.tom.ecgexample.R;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.*;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -101,19 +104,17 @@ public class XYPlotActivity extends Activity {
         }
 
 
-
-
         // initialize our XYPlot reference:
         plot = (XYPlot) findViewById(R.id.plot);
 
-        ECGModel ecgSeries = new ECGModel(2000, 200, btSocket );
+        ECGModel ecgSeries = new ECGModel(100, 200, btSocket );
 
         // add a new series' to the xyplot:
-        MyFadeFormatter formatter =new MyFadeFormatter(2000);
+        MyFadeFormatter formatter =new MyFadeFormatter(100);
         formatter.setLegendIconEnabled(false);
         plot.addSeries(ecgSeries, formatter);
-        plot.setRangeBoundaries(0, 10, BoundaryMode.FIXED);
-        plot.setDomainBoundaries(0, 2000, BoundaryMode.FIXED);
+        plot.setRangeBoundaries(0, 1024, BoundaryMode.FIXED);
+        plot.setDomainBoundaries(0, 100, BoundaryMode.FIXED);
 
         // reduce the number of range labels
         plot.setLinesPerRangeLabel(3);
@@ -206,8 +207,8 @@ public class XYPlotActivity extends Activity {
         private boolean keepRunning;
         private int latestIndex;
         private final InputStream mmInStream;
+        private OutputStream outStream;
         private float inByte = 0;
-        private byte[] buffer = new byte[10];  // buffer store for the stream
 
         private WeakReference<AdvancedLineAndPointRenderer> rendererRef;
 
@@ -224,6 +225,8 @@ public class XYPlotActivity extends Activity {
             // member streams are final
             try {
                 tmpIn = socket.getInputStream();
+                outStream = socket.getOutputStream();
+                outStream.write(1);
             } catch (IOException e) {}
 
             mmInStream = tmpIn;
@@ -253,15 +256,16 @@ public class XYPlotActivity extends Activity {
                                     latestIndex = 0;
                                 }
 
-                                // generate some random data:
-                                ////////////////////////////////////
+                                byte[] buffer = new byte[5];
                                 bytes = mmInStream.read(buffer);        // Get number of bytes and message in "buffer"
                                 String str = new String(buffer, StandardCharsets.UTF_8);
                                 //System.out.println(str);
-                                str = str.replace(System.getProperty("line.separator"), " ");
+                                //str = str.replace(System.getProperty("line.separator"), " ");
 
                                 String inString = str.trim();
-                                String[] array = inString.split(" ");
+                                String[] array = inString.split(System.getProperty("line.separator"));
+                                if(array[0].isEmpty())
+                                    continue;
                                 //Toast.makeText(SimpleXYPlotActivity.this, array[0], Toast.LENGTH_SHORT).show();
                                 System.out.println(array[0]);
                                 inByte = Float.parseFloat(array[0]);
@@ -276,12 +280,13 @@ public class XYPlotActivity extends Activity {
 
                                 if (rendererRef.get() != null) {
                                     rendererRef.get().setLatestIndex(latestIndex);
-                                    Thread.sleep(delayMs);
+                                    Thread.sleep(3);
                                 } else {
                                     keepRunning = false;
                                 }
                                 latestIndex++;
                             }catch (IOException e) {
+                                System.out.println("SOSAT");
                                 break;
                             }
                         }
