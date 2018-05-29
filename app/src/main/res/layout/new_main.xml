@@ -14,18 +14,18 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:text="Settings"
         android:textAllCaps="false"
         android:textColor="@color/ap_white"
         android:textSize="18sp"
         android:textStyle="normal|italic"
         android:theme="@style/MyButton"
-        app:layout_constraintBottom_toTopOf="@+id/ECGButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PulseButton"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/ECGButton"
+        app:layout_constraintVertical_bias="0.014"
         tools:ignore="MissingConstraints" />
 
     <ImageView
@@ -46,17 +46,17 @@
         android:id="@+id/ECGButton"
         android:layout_width="195dp"
         android:layout_height="54dp"
-        android:layout_marginBottom="140dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/ecg"
         android:textColor="@color/ap_white"
         android:textSize="18sp"
         android:textStyle="normal|italic"
         android:theme="@style/MyButton"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PulseButton"
         tools:ignore="MissingConstraints" />
 
     <Button
